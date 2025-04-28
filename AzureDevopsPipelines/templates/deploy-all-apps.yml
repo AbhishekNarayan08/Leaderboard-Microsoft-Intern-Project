@@ -1,0 +1,42 @@
+# Deploy ALL Apps
+
+parameters:
+  vmImageName: 'windows-latest'
+  deploymentEnvironment: ''
+  environmentTag: ''
+  azureSubscription: ''
+
+stages:
+- stage: ${{ parameters.environmentTag }}_Deployment
+  displayName: Deploy ${{ parameters.environmentTag }} Apps
+  dependsOn:
+  - Build
+  condition: succeeded()
+  
+  jobs:
+  - template: deploy-function-app.yml
+    parameters:
+      vmImageName: ${{ parameters.vmImageName }}
+      deploymentEnvironment: ${{ parameters.deploymentEnvironment }} 
+      environmentTag: ${{ parameters.environmentTag }}
+      projectName: ReadApis
+      ${{ if eq(parameters.environmentTag, 'TEST') }}:
+        appName: 'Reputation-ReadApis-test-wus'
+      ${{ if eq(parameters.environmentTag, 'PROD') }}:
+        appName: 'Reputation-ReadApis-prod-eus'
+      azureSubscription: ${{ parameters.azureSubscription }}
+      variables: '../variables/ReadApis-variables.yml'
+
+  - template: deploy-function-app.yml
+    parameters:
+      vmImageName: ${{ parameters.vmImageName }}
+      deploymentEnvironment: ${{ parameters.deploymentEnvironment }} 
+      environmentTag: ${{ parameters.environmentTag }}
+      projectName: WriteApis
+      ${{ if eq(parameters.environmentTag, 'TEST') }}:
+        appName: 'Reputation-WriteApis-test-wus'
+      ${{ if eq(parameters.environmentTag, 'PROD') }}:
+        appName: 'Reputation-WriteApis-prod-eus'
+      azureSubscription: ${{ parameters.azureSubscription }}
+      variables: '../variables/WriteApis-variables.yml'
+

@@ -1,0 +1,46 @@
+name: Reputation-BuildAndDeploy-$(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+# Enable CI on master branch
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+      - Src/*
+      - AzureDevopsPipelines/*
+    exclude:
+      - Test/*
+
+  # All Pipelines
+variables:
+  - name: vmImageName
+    value: windows-latest
+  - name: buildType
+    value: Release
+  - group: InfoSec-SecurityResults
+
+stages:
+# Builds entire Reputation solution and runs unit tests
+- template: templates/build-test-publish-projects.yml
+  parameters:
+    vmImageName: $(vmImageName)
+    buildType: $(buildType)
+    publishAppsArtifact: true
+    runTests: false
+
+#Deploy ALL Apps to TEST
+- template: templates/deploy-all-apps.yml
+  parameters:
+    vmImageName: $(vmImageName)
+    deploymentEnvironment: 'Reputation-test-wus'
+    environmentTag: 'TEST'
+    azureSubscription: 'Bing UGC STCI Test Azure Pipelines Deployment'
+
+#Deploy ALL Apps to PROD
+- template: templates/deploy-all-apps.yml
+  parameters:
+    vmImageName: $(vmImageName)
+    deploymentEnvironment: 'Reputation-prod-eus'
+    environmentTag: 'PROD'
+    azureSubscription: 'Bing UGC STCI Prod Azure Pipelines Deployment'

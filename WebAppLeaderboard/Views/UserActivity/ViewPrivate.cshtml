@@ -1,0 +1,87 @@
+﻿@model PrivateLeaderboard
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <br />
+        <h4>View Private Leaderboards</h4>
+        <hr />
+        <div class="row">
+
+        <div class="col">
+            <div class="col">
+                @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2 label-text", @size="30"})
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control", @size="30" } })
+                    
+                </div>
+            </div>   
+
+        </div>
+        <div class="col">
+             <div class="col">
+                @Html.LabelFor(model => model.Segment, htmlAttributes: new { @class = "control-label col-md-2 label-text" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.Segment, new SelectList(Enum.GetValues(typeof(Segment))))
+                </div>
+            </div>
+
+            
+             <div class="col">
+                @Html.LabelFor(model => model.Leaderboard, htmlAttributes: new { @class = "control-label col-md-2 label-text", @size="30"})
+                <div class="col-md-10">
+                    @*@Html.DropDownListFor(m => m.Leaderboard, new SelectList(Enum.GetValues(typeof(Activity))))*@
+                    @Html.EditorFor(model => model.Leaderboard, new { htmlAttributes = new { @class = "form-control", @size="30" } })
+                    @Html.ValidationMessageFor(model => model.Leaderboard, "", new { @class = "text-danger" })
+                </div>
+            </div>      
+        </div>
+        </div>
+        
+        <div class="text-center" class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="View" class="btn btn-outline-primary" />
+            </div>
+        </div>
+    </div>
+    <p style="color:red;">@ViewBag.Message</p>
+}
+@if (Model?.leaderboards?.Any() == true){
+    <br />
+    <h4>Leaderboards</h4>
+    <hr />
+    @foreach (var leaderboard in Model.leaderboards)
+    {
+        <div class="col">
+            <h5 class="text-center">@leaderboard.Key Leaderboard</h5>
+            <hr />
+            <table class="content-table ">
+                <thead>
+                    <tr>
+                        <th scope="col" class="label-text" style="text-align:center">Rank</th>
+                        <th scope="col" class="label-text" style="text-align:center">User</th>
+                        <th scope="col" class="label-text" style="text-align:center">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var i = 0;
+                        foreach (var activity in leaderboard.Value)
+                        {
+                            i++;
+                            <tr scope="row">
+                                <td style="text-align:center">@i</td>
+                                <td style="text-align:center">@activity.Key</td>
+                                <td style="text-align:center">@activity.Value</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
+@*<div class="text-left">
+    @Html.ActionLink("Back to Main Page", "Index")
+</div>
+*@

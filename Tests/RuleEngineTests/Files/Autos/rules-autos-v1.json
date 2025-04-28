@@ -1,0 +1,69 @@
+{
+  "metadata":{
+    "version":"1",
+    "segment": "Autos",
+    "CreationDateTime":"2021-05-13T17:45:53"
+  },
+  "workflows":[
+  {
+    "WorkflowName": "Autos",
+    "Rules": [
+      {
+        "RuleName": "Comment",
+        "ErrorMessage": "Comment rule failed.",
+        "ErrorType": "Error",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "ReputationActivity.ActivityType.ToLower() == \"comment\"",
+        "LocalParams": [
+          {
+            "Name": "Action",
+            "Expression": "\"IncrementReputation\""
+          },
+          {
+            "Name": "Amount",
+            "Expression": "5"
+          }
+        ]
+      },
+      {
+        "RuleName": "UserIsActive",
+        "ErrorMessage": "UserIsActive rule failed.",
+        "ErrorType": "Error",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "UserProfile.ReputationBySegment[\"Autos\"].PointValue > 2",
+        "LocalParams": [
+          {
+            "Name": "Action",
+            "Expression": "\"AddBage\""
+          },
+          {
+            "Name": "BadgeType",
+            "Expression": "\"Bronze\""
+          }
+        ]
+      },
+      {
+        "RuleName": "BumpUpLevelto2",
+        "ErrorMessage": "UserIsActive rule failed.",
+        "ErrorType": "Error",
+        "RuleExpressionType": "LambdaExpression",
+        "Expression": "UserProfile.ReputationBySegment[\"Autos\"].PointValue > 1 && UserProfile.ReputationBySegment[\"Autos\"].Level.CurrentLevel < NewLevel",
+        "LocalParams": [
+          {
+            "Name": "Action",
+            "Expression": "\"UpdateLevel\""
+          },
+          {
+            "Name": "NewLevel",
+            "Expression": "2"
+          },
+          {
+            "Name": "PointsForNextLevel",
+            "Expression": "10"
+          }
+        ]
+      }
+    ]
+  }
+]
+}

@@ -1,0 +1,84 @@
+﻿@model UserProfileModel
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <br />
+        <h4>Add User Activity</h4>
+        <hr />
+        <div class="row">
+        <div class="col">
+             <div class="col">
+                @Html.LabelFor(model => model.Segment, htmlAttributes: new { @class = "control-label col-md-2 label-text" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.Segment, new SelectList(Enum.GetValues(typeof(Segment))))
+                </div>
+            </div>            
+             <div class="col">
+                @Html.LabelFor(model => model.Leaderboard, htmlAttributes: new { @class = "control-label col-md-2 label-text", @size="20"})
+                <div class="col-md-10">
+                    @*@Html.DropDownListFor(m => m.Leaderboard, new SelectList(Enum.GetValues(typeof(Activity))))*@
+                    @Html.EditorFor(model => model.Leaderboard, new { htmlAttributes = new { @class = "form-control", @size="20" } })
+                    @*@Html.ValidationMessageFor(model => model.Leaderboard, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="col">
+                @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2 label-text", @size="20", })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control", @size="20" } })
+                    @*@Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+            <div class="col">
+                @Html.LabelFor(model => model.Points, htmlAttributes: new { @class = "control-label col-md-2 label-text", @size="20"})
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Points, new { htmlAttributes = new { @class = "form-control", @size="20" } })
+                    @*@Html.ValidationMessageFor(model => model.Points, "", new { @class = "text-danger" })*@
+                </div>
+            </div>
+
+        </div>
+        </div>
+
+        <div class="text-center" class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-outline-primary" />
+            </div>
+        </div>
+    </div>
+    <p style="color:red;">@ViewBag.Message</p>
+}
+@if (Model?.Activities?.Any() == true)
+{
+    <br />
+    <h4>Activity Stream</h4>
+    <hr />
+    
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th scope="col" class="label-text" style="text-align:center">Time</th>
+                <th scope="col" class="label-text" style="text-align:center">User</th>
+                <th scope="col" class="label-text" style="text-align:center">Segment</th>
+                <th scope="col" class="label-text" style="text-align:center">Leaderboard</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var activity in Model.Activities)
+            {
+                <tr scope="row">
+                    <td style="text-align:center">@(String.Format("{0:T}", activity.TimeStamp))</td>
+                    <td style="text-align:center">@activity.UserId</td>
+                    <td style="text-align:center">@activity.SegmentId</td>
+                    <td style="text-align:center">@activity.ActivityType</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}</div>
+@*<div class="text-left">
+    @Html.ActionLink("Back to Main Page", "Index")
+</div>*@

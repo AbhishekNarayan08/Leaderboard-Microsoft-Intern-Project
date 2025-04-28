@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "version": "3",
+    "segment": "Autos",
+    "CreationDateTime": "2021-06-23T17:45:53"
+  },
+  "workflows": [
+    {
+      "WorkflowName": "Autos",
+      "Rules": [
+        {
+          "RuleName": "Like",
+          "ErrorMessage": "Like rule failed.",
+          "ErrorType": "Error",
+          "RuleExpressionType": "LambdaExpression",
+          "Expression": "ReputationActivity.ActivityType.ToLower() == \"like\"",
+          "LocalParams": [
+            {
+              "Name": "Action",
+              "Expression": "\"AddBage\""
+            },
+            {
+              "Name": "BadgeType",
+              "Expression": "\"Silver\""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

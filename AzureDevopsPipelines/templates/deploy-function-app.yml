@@ -1,0 +1,51 @@
+# Deploy FastPath App
+
+parameters:
+  vmImageName: 'windows-latest'
+  deploymentEnvironment: ''
+  environmentTag: ''
+  projectName: ''
+  appName: ''
+  azureSubscription: ''
+  variables: ''
+
+jobs:
+- deployment: Deploy_${{ parameters.projectName }}
+  displayName: Deploy ${{ parameters.projectName }}
+  environment: ${{ parameters.deploymentEnvironment }}
+  pool:
+    vmImage: ${{ parameters.vmImageName }}
+  variables:
+  - template: ${{ parameters.variables }}
+
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: none
+
+        # Disable default download
+        - download: none
+    
+        # Download the function app package
+        - task: DownloadPipelineArtifact@2
+          displayName: 'Download ${{ parameters.projectName }} Package'
+          inputs:
+            source: current
+            artifact: ReputationPublishOutput
+            patterns: '${{ parameters.projectName }}.zip'
+            targetPath: $(Pipeline.Workspace)
+
+        # Deploy the function app
+        - task: AzureFunctionApp@1
+          displayName: 'Deploy Function App to ${{ parameters.environmentTag }}'
+          inputs:
+            appType: 'functionApp'
+            appName: ${{ parameters.appName }}
+            azureSubscription: ${{ parameters.azureSubscription }}
+            ${{ if eq(parameters.environmentTag, 'TEST') }}:
+              appSettings: $(testAppSettings)
+            ${{ if eq(parameters.environmentTag, 'PROD') }}:
+              appSettings: $(prodAppSettings)
+            package: '$(Pipeline.Workspace)/${{ parameters.projectName }}.zip'
+            deploymentMethod: 'runFromPackage'

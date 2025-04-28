@@ -1,0 +1,143 @@
+# Builds and publish Reputaion projects
+parameters:
+  - name: vmImageName
+    type: string
+    default: 'windows-latest'
+  - name: buildPlatform
+    type: string
+    default: 'Any CPU'
+  - name: buildType
+    type: string
+    default: Release
+  - name: publishAppsArtifact
+    type: boolean
+    default: true
+  - name: runTests
+    type: boolean
+    default: false
+
+stages:
+- stage: Build
+  displayName: 'Build & Test'
+
+  jobs:
+  - job: BuildAndPublish
+    displayName: 'Build & Publish Projects'
+    pool:
+      vmImage: ${{ parameters.vmImageName }}
+
+    steps:
+    # Automatically check out source code
+    - checkout: self
+      fetchDepth: 2
+      clean: true
+
+    # Add this Command to Include the .NET 6 SDK
+    - task: UseDotNet@2
+      displayName: Use .NET 6.0
+      inputs:
+        packageType: 'sdk'
+        version: '6.0.x'
+
+    # Add a Command To List the Current .NET SDKs (Sanity Check)
+    - task: CmdLine@2
+      inputs:
+        script: 'dotnet --list-sdks'
+
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(System.DefaultWorkingDirectory)/Reputation.sln'
+
+    # CSRF (Cross-Site Request Forgery) build task, to scan for common mitigations against cross-site request forgery
+    - task: CSRF@1
+      displayName: CSRF task
+    
+    #CredScanner task to ensure that secrets are protected
+    - task: CredScan@3
+      displayName: Cred Scanner
+
+    - task: ESLint@1
+      inputs:
+        Configuration: 'required'
+        TargetType: 'eslint'
+        ErrorLevel: 'warn'
+        
+    # Build Solution
+    - task: DotNetCoreCLI@2
+      displayName: Build Projects
+      inputs:
+        command: 'build'
+        projects: '$(System.DefaultWorkingDirectory)/Reputation.sln'
+        publishWebProjects: false
+        zipAfterPublish: false
+        arguments: '--configuration ${{ parameters.buildType }} --no-restore -m'
+
+    # This task should be after the VSBuild, MSBuild or .NET Core build step.
+    - task: RoslynAnalyzers@3
+      displayName: 'Run Roslyn Analyzers'
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      inputs:
+        userProvideBuildInfo: 'autoMsBuildInfo'
+        rulesetName: 'Policy'
+        policyName: 'M365'
+
+    - task: PublishSecurityAnalysisLogs@3
+      inputs:
+        ArtifactName: 'CodeAnalysisLogs'
+        ArtifactType: 'M365'
+        AllTools: true
+        ToolLogsNotFoundAction: 'Standard'
+      continueOnError: true
+    # Guardian task 2
+    - task: AssetRetention@3
+      inputs:
+        ArrowServiceConnection: 'Arrow_Bing_UGC_PROD' 
+        AssetGroupName: '$(System.TeamProject)_$(Build.DefinitionName)'
+        AssetNumber: '$(Build.BuildId)'
+        IsShipped: false
+        DropsToRetain: 'CodeAnalysisLogs'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
+
+    - task: PostAnalysis@2
+      inputs:
+          GdnBreakPolicyMinSev: 'Warning'
+          GdnBreakAllTools: false
+          GdnBreakGdnToolBinSkim: true
+          GdnBreakGdnToolBinSkimSeverity: 'Warning'
+          GdnBreakGdnToolCredScan: true
+          GdnBreakGdnToolCredScanSeverity: 'Warning'
+          GdnBreakGdnToolESLint: true
+          GdnBreakGdnToolESLintSeverity: 'Warning'
+          GdnBreakGdnToolRoslynAnalyzers: true
+          GdnBreakGdnToolRoslynAnalyzersSeverity: 'Warning'
+          GdnBreakPolicy: 'M365'
+          
+    # Publish Apps Artifact
+    - ${{ if eq(parameters.publishAppsArtifact, true) }}:
+      # Publish Apps Projects
+      - task: DotNetCoreCLI@2
+        displayName: Publish Projects
+        inputs:
+          command: 'publish'
+          projects: |
+            $(System.DefaultWorkingDirectory)/Src/**/*.csproj
+          publishWebProjects: false
+          zipAfterPublish: true
+          arguments: '--no-build --no-restore --output $(System.DefaultWorkingDirectory)/Src/publish_output/ --configuration ${{ parameters.buildType }}'
+
+      # Create Apps Artifact
+      - publish: $(System.DefaultWorkingDirectory)/Src/publish_output/
+        displayName: Create Apps Artifact
+        artifact: ReputationPublishOutput
+
+    # Run tests
+    - ${{ if eq(parameters.runTests, true) }}:
+      - task: DotNetCoreCLI@2
+        displayName: 'Run Unit Tests'
+        inputs:
+          command: 'test'
+          projects: '**/*Test.csproj'
+          arguments: '--collect "Code Coverage"'

@@ -1,0 +1,22 @@
+# Whenever a new PR is created: builds Reputation, then runs unit tests
+
+name: $(SourceBranchName)-$(Date:yyyyMMdd)$(Rev:.r)
+
+# Disable default CI trigger (PR build trigger is setup in ADO branch policies UI)
+trigger: none
+
+variables:
+  - name: vmImageName
+    value: windows-latest
+  - name: buildType
+    value: Release
+  - group: InfoSec-SecurityResults
+
+stages:
+# Builds entire Reputation solution and runs unit tests
+- template: templates/build-test-publish-projects.yml
+  parameters:
+    vmImageName: $(vmImageName)
+    buildType: $(buildType)
+    publishAppsArtifact: false
+    runTests: true

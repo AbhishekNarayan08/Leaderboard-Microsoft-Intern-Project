@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <AzureFunctionsVersion>v4</AzureFunctionsVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Function1.cs" />
+    <Compile Remove="Startup.cs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Src\Core\BulkActivityProcessor\BulkActivityProcessor.csproj" />
+    <ProjectReference Include="..\Src\Core\LeaderboardProcessor\LeaderboardProcessor.csproj" />
+    <ProjectReference Include="..\Src\Core\UserActivityProcessor\UserActivityProcessor.csproj" />
+    <ProjectReference Include="..\Src\DataAccess\AzureStorage\AzureStorage.csproj" />
+    <ProjectReference Include="..\Src\DataAccess\CosmosDB\CosmosDB.csproj" />
+    <ProjectReference Include="..\Src\DataAccess\EventHub\EventHub.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="host.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+</Project>

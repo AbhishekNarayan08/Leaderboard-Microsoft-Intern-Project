@@ -1,0 +1,126 @@
+﻿@model LeaderboardModel
+
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        <br />
+        <h4>View Leaderboards</h4>
+        <hr />
+
+        <div class="row">
+            
+            <div class="col">
+                @Html.LabelFor(model => model.Segment, htmlAttributes: new { @class = "control-label col-md-2 label-text" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(m => m.Segment, new SelectList(Enum.GetValues(typeof(Segment))))
+                </div>
+            </div>
+
+            <div class="col">
+                @Html.LabelFor(model => model.Leaderboard, htmlAttributes: new { @class = "control-label col-md-2 label-text" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Leaderboard, new { htmlAttributes = new { @class = "form-control" } })
+                    
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="View" class="btn btn-outline-primary" />
+            </div>
+        </div>
+    </div>
+    <p style="color:red;">@ViewBag.Message</p>
+}
+@if (Model?.Segmenttopn?.Any() == true && Model?.Activitytopn?.Any() == true)
+{
+    <br />
+    <h4 class="text-center">Leaderboards</h4>
+    <hr />
+    
+        <div class="col">
+            <h5 class="text-center">@Model.Segment Leaderboard</h5>
+            <hr />
+    <table class="content-table ">
+        <thead>
+            <tr>
+                <th scope="col" class="label-text" style="text-align:center">Rank</th>
+                <th scope="col" class="label-text" style="text-align:center">User</th>
+                <th scope="col" class="label-text" style="text-align:center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+           @{
+                    var i = 0;
+                    foreach (var activity in Model.Segmenttopn)
+                    {
+                        i++;
+                        <tr scope="row">
+                            <td style="text-align:center">@i</td>
+                            <td style="text-align:center">@activity.Key</td>
+                            <td style="text-align:center">@activity.Value</td>
+                        </tr>
+                    }
+            }
+        </tbody>
+    </table>
+    </div>
+    <div class="col">
+        <h5 class="text-center">@Model.Segment @Model.Leaderboard Leaderboard</h5>
+        <hr />
+    <table  class="content-table">
+        <thead>
+            <tr>
+                <th scope="col" class="label-text" style="text-align:center">Rank</th>
+                <th scope="col" class="label-text" style="text-align:center">User</th>
+                <th scope="col" class="label-text" style="text-align:center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var j=0;
+                foreach (var activity in Model.Activitytopn)
+                {
+                    j++;
+                    <tr scope="row">
+                        <td style="text-align:center">@j</td>
+                        <td style="text-align:center">@activity.Key</td>
+                        <td style="text-align:center">@activity.Value</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    </div>
+}
+
+@*@if (Model?.Activitytopn?.Any() == true)
+{
+    <br />
+    <h4>Leaderboards</h4>
+    <hr />
+    
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col" class="label-text" style="text-align:center">UserId</th>
+                <th scope="col" class="label-text" style="text-align:center">Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var activity in Model.Activitytopn)
+            {
+                <tr scope="row">
+                    <td style="text-align:center">@activity.Key</td>
+                    <td style="text-align:center">@activity.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}</div>
+*@
+@*<div>
+    @Html.ActionLink("Back to Main Page", "Index")
+</div>*@

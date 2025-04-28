@@ -1,0 +1,22 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    // General values
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "KeyVaultUri": "https://reputation-kv-dev-wus2.vault.azure.net/",
+    "AzureWebJobsStorage": "Copy connection string from https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/81a5dc48-27d9-4631-9dc3-27d6157452e3/resourceGroups/stci-ugc-dev/providers/Microsoft.Storage/storageAccounts/reputationdevwestus2data/keys",
+
+    // Blob storage 
+    "BlobStorageConnectionString": "KeyVault=https://reputation-kv-dev-wus2.vault.azure.net/secrets/BlobStorageDevConnectionString/99c46b3116bc48b8b5a7e8b1fc07f68f",
+
+    // Event hub
+    "EventHubConnectionString": "Copy Connection string for Development from https://ms.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/81a5dc48-27d9-4631-9dc3-27d6157452e3/resourceGroups/stci-ugc-dev/providers/Microsoft.EventHub/namespaces/reputation-hub-dev-wus2/eventhubs/activities/saskey",
+
+    // Cosmos Db
+    "CosmosDbEndPointUrl": "https://reputation-db-dev-wus.documents.azure.com:443/",
+    "CosmosDbPrimaryKey": "KeyVault=https://reputation-kv-dev-wus2.vault.azure.net/secrets/CosmosDbPrimaryKey/5d28d23405604bdf9f91f1ca7685e758",
+
+    // Batch process
+    "BlobsBatchSize": 10
+  }
+}

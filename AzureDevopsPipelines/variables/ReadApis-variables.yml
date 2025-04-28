@@ -1,0 +1,29 @@
+variables:
+  # Agent VM image name
+  vmImageName: 'windows-latest'
+  buildType: Release
+  testAppSettings: >-
+    -APPINSIGHTS_INSTRUMENTATIONKEY "37d8f7ee-916a-41a3-8d72-470db4fcbed1"
+    -AppResourceGroupName "Reputation-test-wus"
+    -AzureWebJobsStorage "@Microsoft.KeyVault(SecretUri=https://reputation-kv-test-wus.vault.azure.net/secrets/BlobStorageTestConnectionString/f585f8d2c505488c88676e8cd21cb327)"
+    -BlobStorageConnectionString "KeyVault=https://reputation-kv-test-wus.vault.azure.net/secrets/BlobStorageTestConnectionString/f585f8d2c505488c88676e8cd21cb327"
+    -EventHubConnectionString "@Microsoft.KeyVault(SecretUri=https://reputation-kv-test-wus.vault.azure.net/secrets/EventHubConnectionString/5ae4fc03a53142f88e63529b7546b765)"
+    -CosmosDbEndPointUrl "https://reputation-db-test-wus.documents.azure.com:443/"
+    -CosmosDbPrimaryKey "KeyVault=https://reputation-kv-test-wus.vault.azure.net/secrets/CosmosDbPrimaryKey/af3ecd22fc954915a973821aa69b5d5d"
+    -WEBSITE_CONTENTOVERVNET "1"
+    -WEBSITE_VNET_ROUTE_ALL "1"
+    -WEBSITE_DNS_SERVER "168.63.129.16"
+    -BlobsBatchSize 100
+
+  prodAppSettings: >-
+    -APPINSIGHTS_INSTRUMENTATIONKEY "22ba9eb8-3c9e-492d-8416-7414e4e78426"
+    -AppResourceGroupName "Reputation-prod-eus"
+    -AzureWebJobsStorage "@Microsoft.KeyVault(SecretUri=https://reputation-kv-prod-eus.vault.azure.net/secrets/BlobStorageProdConnectionString/cdd14ff169d246e69162767e6a7017d7)"
+    -BlobStorageConnectionString "KeyVault=https://reputation-kv-prod-eus.vault.azure.net/secrets/BlobStorageProdConnectionString/cdd14ff169d246e69162767e6a7017d7"
+    -EventHubConnectionString "@Microsoft.KeyVault(SecretUri=https://reputation-kv-prod-eus.vault.azure.net/secrets/EventHubConnectionString/5019c1dc18d54208b68131cb5e4d7f1b)"
+    -CosmosDbEndPointUrl "https://reputation-db-prod-eus.documents.azure.com:443/"
+    -CosmosDbPrimaryKey "KeyVault=https://reputation-kv-prod-eus.vault.azure.net/secrets/CosmosDbPrimaryKey/c1bc417ec725461ca8ce429f23d433c8"
+    -WEBSITE_CONTENTOVERVNET "1"
+    -WEBSITE_VNET_ROUTE_ALL "1"
+    -WEBSITE_DNS_SERVER "168.63.129.16"
+    -BlobsBatchSize 100

@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "version": "2",
+    "segment": "Autos",
+    "CreationDateTime": "2021-05-23T17:45:53"
+  },
+  "workflows": [
+    {
+      "WorkflowName": "Autos",
+      "Rules": [
+        {
+          "RuleName": "Comment",
+          "ErrorMessage": "Comment rule failed.",
+          "ErrorType": "Error",
+          "RuleExpressionType": "LambdaExpression",
+          "Expression": "ReputationActivity.ActivityType.ToLower() == \"comment\"",
+          "LocalParams": [
+            {
+              "Name": "Action",
+              "Expression": "\"IncrementReputation\""
+            },
+            {
+              "Name": "Amount",
+              "Expression": "20"
+            }
+          ]
+        },
+        {
+          "RuleName": "Like",
+          "ErrorMessage": "Like rule failed.",
+          "ErrorType": "Error",
+          "RuleExpressionType": "LambdaExpression",
+          "Expression": "ReputationActivity.ActivityType.ToLower() == \"like\"",
+          "LocalParams": [
+            {
+              "Name": "Action",
+              "Expression": "\"AddBage\""
+            },
+            {
+              "Name": "BadgeType",
+              "Expression": "\"Silver\""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

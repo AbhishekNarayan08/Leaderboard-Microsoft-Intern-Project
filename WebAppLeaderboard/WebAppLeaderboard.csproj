@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Src\Core\GetReputationProcessor\GetReputationProcessor.csproj" />
+    <ProjectReference Include="..\Src\Core\LeaderboardProcessor\LeaderboardProcessor.csproj" />
+    <ProjectReference Include="..\Src\DataAccess\RedisCache\RedisCache.csproj" />
+    <ProjectReference Include="..\Src\Shared\Common\Common.csproj" />
+  </ItemGroup>
+
+</Project>

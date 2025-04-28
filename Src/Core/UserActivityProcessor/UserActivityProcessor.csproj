@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.EventHubs" Version="4.3.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Text.Encodings.Web" Version="5.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DataAccess\AzureStorage\AzureStorage.csproj" />
+    <ProjectReference Include="..\..\DataAccess\CosmosDB\CosmosDB.csproj" />
+    <ProjectReference Include="..\..\DataAccess\EventHub\EventHub.csproj" />
+    <ProjectReference Include="..\..\RuleEngine\RuleEngine.csproj" />
+    <ProjectReference Include="..\..\Shared\Common\Common.csproj" />
+    <ProjectReference Include="..\LeaderboardProcessor\LeaderboardProcessor.csproj" />
+  </ItemGroup>
+
+</Project>
