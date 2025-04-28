@@ -1,0 +1,12 @@
+﻿[*.cs]
+dotnet_diagnostic.SA1600.severity=silent
+dotnet_diagnostic.SA1638.severity=error
+dotnet_diagnostic.SA1629.severity=silent
+dotnet_diagnostic.SA1200.severity=error
+dotnet_diagnostic.SA1633.severity=error
+dotnet_diagnostic.SA1507.severity=error
+dotnet_diagnostic.SA1508.severity=error
+dotnet_diagnostic.SA1000.severity=error
+dotnet_diagnostic.SA1602.severity=silent
+
+# Default severity for analyzer diagnostics with category 'StyleCop.CSharp.DocumentationRules'
